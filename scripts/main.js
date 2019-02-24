@@ -2,7 +2,13 @@ window.onload = init;
 
 const 	CANVAS_WIDTH = 500,
 		CANVAS_HEIGHT = 400,
+		GRID_SIZE = 32,
 		CANVAS_BACKGROUNDS = 'rgba(0, 44, 55, 0.5)';
+
+var vn = Math.floor(CANVAS_WIDTH / GRID_SIZE);
+var hn = Math.floor(CANVAS_HEIGHT / GRID_SIZE);
+var xStart = (CANVAS_WIDTH - (GRID_SIZE * vn)) / 2;
+var yStart = (CANVAS_HEIGHT - (GRID_SIZE * hn)) / 2;
 var canvas, ctx, ball;
 
 function init() {
@@ -20,7 +26,8 @@ function init() {
 
 function animate() {
 	requestAnimationFrame(animate);
-	cleanBackground()
+	cleanBackground();
+	drawGrid();
 	ball.update();
 }
 
@@ -53,4 +60,36 @@ function cleanBackground() {
 	ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	ctx.fillStyle = CANVAS_BACKGROUNDS;
 	ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+}
+
+function drawGrid() {
+	for (var i = 0; i <= vn; i++) {
+		var xOfLine = xStart + (GRID_SIZE * i);
+		ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+		ctx.beginPath();
+		ctx.moveTo(xOfLine, 0);
+		ctx.lineTo(xOfLine, CANVAS_HEIGHT);
+		ctx.stroke();
+	}
+	for (var i = 0; i <= hn; i++) {
+		var yOfLine = yStart + (GRID_SIZE * i);
+		ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+		ctx.beginPath();
+		ctx.moveTo(0, yOfLine);
+		ctx.lineTo(CANVAS_WIDTH, yOfLine);
+		ctx.stroke();
+	}
+
+	for (var i = 0; i < vn; i++) {
+		for (var j = 0; j < hn; j++) {
+			var gridFontSize = 10;
+			var gridCoord = i+", "+j;
+			ctx.font = gridFontSize + "px Arial";
+			var textWidth = ctx.measureText(gridCoord).width;
+			var textHeight = gridFontSize;
+			var xOfText = xStart + (GRID_SIZE * i) + (GRID_SIZE / 2) - (textWidth / 2);
+			var yOfText = yStart + (GRID_SIZE * j) + (GRID_SIZE / 2) + (textHeight / 2);
+			ctx.fillText(gridCoord, xOfText, yOfText);
+		}
+	}
 }
