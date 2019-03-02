@@ -64,10 +64,10 @@ function Ball() {
 		ctx.fill();
 
 		// Draw tile id
-		var ballTileId = getTileID(this.x, this.y);
-		ctx.fillStyle = 'rgba(0, 0, 255, 1)';
-		ctx.font = 'normal bold 1em courier';
-		ctx.fillText('('+ballTileId[0]+', '+ballTileId[1]+')', this.x, this.y);
+		drawTileID(this.x, this.y);
+		// ctx.fillStyle = 'rgba(0, 0, 255, 1)';
+		// ctx.font = 'normal bold 1em courier';
+		// ctx.fillText('('+ballTileId[0]+', '+ballTileId[1]+')', this.x, this.y);
 	}
 
 }
@@ -118,7 +118,17 @@ function drawFPS(time) {
 	previousFrameTime = time;
 	ctx.fillStyle = 'rgba(255, 0, 0, 1)';
 	ctx.font = 'normal bold 1.5em courier';
-	ctx.fillText(FPS, 10, 20);
+	ctx.fillText('FPS:' + FPS, 10, 20);
+}
+
+// Draw tile ID on its position
+function drawTileID(x, y) {
+	var currentTileId = getTileID(x, y);
+	var tileIDText = '('+currentTileId[0]+', '+currentTileId[1]+')';
+	var textWidth = ctx.measureText(tileIDText).width;
+	ctx.fillStyle = 'rgba(0, 0, 255, 1)';
+	ctx.font = 'normal bold 1em courier';
+	ctx.fillText(tileIDText, xStart + x - (textWidth / 2), yStart + y);
 }
 
 function getCurrentTileID() {
