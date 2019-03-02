@@ -33,6 +33,7 @@ function animate(time) {
 	cleanBackground();
 	if (showGrid) {
 		drawGrid();
+		getCurrentTileID();
 	}
 	if (showFPS) {
 		drawFPS(time);
@@ -72,6 +73,7 @@ function cleanBackground() {
 }
 
 function drawGrid() {
+	var gridFontSize = 10;
 	for (var i = 0; i <= vn; i++) {
 		var xOfLine = xStart + (GRID_SIZE * i);
 		ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
@@ -91,7 +93,6 @@ function drawGrid() {
 
 	for (var i = 0; i < vn; i++) {
 		for (var j = 0; j < hn; j++) {
-			var gridFontSize = 10;
 			var gridCoord = i+", "+j;
 			ctx.font = gridFontSize + "px Arial";
 			var textWidth = ctx.measureText(gridCoord).width;
@@ -102,6 +103,8 @@ function drawGrid() {
 		}
 	}
 }
+
+// FPS Renderer
 var previousFrameTime;
 function drawFPS(time) {
 	var FPS = Math.floor(1000 / (time - previousFrameTime));
@@ -109,4 +112,31 @@ function drawFPS(time) {
 	ctx.fillStyle = 'rgba(255, 0, 0, 1)';
 	ctx.font = 'normal bold 1.5em courier';
 	ctx.fillText(FPS, 10, 20);
+}
+
+function getCurrentTileID() {
+	var canvasBoundary = canvas.getBoundingClientRect();
+	// console.log(canvasBoundary);
+	canvas.addEventListener('mousemove', function(e) {
+		var clientX = e.clientX;
+		var clientY = e.clientY;
+		cursorX = clientX - canvasBoundary.x;
+		cursorY = clientY - canvasBoundary.y;
+	})
+	// console.log('('+cursorX+', '+cursorY+')');
+	if (typeof(cursorX) != 'undefined' || typeof(cursorY) != 'undefined') {
+		var tileX = Math.floor((cursorX - xStart) / GRID_SIZE);
+		var tileY = Math.floor((cursorY - yStart) / GRID_SIZE);
+		ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+		ctx.font = 'normal bold 1.5em courier';
+		ctx.fillText('('+tileX+', '+tileY+')', 10, 40);
+		highlightTile(tileX, tileY);
+	}
+}
+
+function highlightTile(tileX, tileY, highlightColor) {
+	ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+	var highlightTileX = xStart + (tileX * GRID_SIZE);
+	var highlightTileY = yStart + (tileY * GRID_SIZE);
+	ctx.fillRect(highlightTileX, highlightTileY, GRID_SIZE, GRID_SIZE);
 }
