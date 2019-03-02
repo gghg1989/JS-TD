@@ -57,12 +57,19 @@ function Ball() {
 
 	this.render = function() {
 		// ctx.strokeStyle = 'rgba(155, 100, 20, 0.8)';
-		ctx.fillStyle = 'rgba(155, 100, 20, 0.8)';
+		ctx.fillStyle = 'rgba(155, 100, 20, 0.5)';
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.r, 2*Math.PI, 0, false);
 		// ctx.stroke();
 		ctx.fill();
+
+		// Draw tile id
+		var ballTileId = getTileID(this.x, this.y);
+		ctx.fillStyle = 'rgba(0, 0, 255, 1)';
+		ctx.font = 'normal bold 1em courier';
+		ctx.fillText('('+ballTileId[0]+', '+ballTileId[1]+')', this.x, this.y);
 	}
+
 }
 
 function cleanBackground() {
@@ -125,13 +132,23 @@ function getCurrentTileID() {
 	})
 	// console.log('('+cursorX+', '+cursorY+')');
 	if (typeof(cursorX) != 'undefined' || typeof(cursorY) != 'undefined') {
-		var tileX = Math.floor((cursorX - xStart) / GRID_SIZE);
-		var tileY = Math.floor((cursorY - yStart) / GRID_SIZE);
+		var tileID = getTileID(cursorX, cursorY);
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)';
 		ctx.font = 'normal bold 1.5em courier';
-		ctx.fillText('('+tileX+', '+tileY+')', 10, 40);
-		highlightTile(tileX, tileY);
+		ctx.fillText('('+tileID[0]+', '+tileID[1]+')', 10, 40);
+		highlightTile(tileID[0], tileID[1]);
 	}
+}
+
+function getTileID(x, y) {
+	// var canvasBoundary = canvas.getBoundingClientRect();
+	// console.log('('+cursorX+', '+cursorY+')');
+	if (typeof(x) != 'undefined' || typeof(y) != 'undefined') {
+		var tileX = Math.floor((x - xStart) / GRID_SIZE);
+		var tileY = Math.floor((y - yStart) / GRID_SIZE);
+		return [tileX, tileY]; 
+	}
+	return [0, 0]
 }
 
 function highlightTile(tileX, tileY, highlightColor) {
