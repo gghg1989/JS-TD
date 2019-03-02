@@ -11,6 +11,10 @@ var xStart = (CANVAS_WIDTH - (GRID_SIZE * vn)) / 2;
 var yStart = (CANVAS_HEIGHT - (GRID_SIZE * hn)) / 2;
 var canvas, ctx, ball;
 
+// Debug switch
+var showFPS = true;
+var showGrid = true;
+
 function init() {
 	canvas = document.getElementById('canvas');
 	canvas.width = CANVAS_WIDTH;
@@ -24,10 +28,15 @@ function init() {
 	animate();
 }
 
-function animate() {
+function animate(time) {
 	requestAnimationFrame(animate);
 	cleanBackground();
-	drawGrid();
+	if (showGrid) {
+		drawGrid();
+	}
+	if (showFPS) {
+		drawFPS(time);
+	}
 	ball.update();
 }
 
@@ -92,4 +101,12 @@ function drawGrid() {
 			ctx.fillText(gridCoord, xOfText, yOfText);
 		}
 	}
+}
+var previousFrameTime;
+function drawFPS(time) {
+	var FPS = Math.floor(1000 / (time - previousFrameTime));
+	previousFrameTime = time;
+	ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+	ctx.font = 'normal bold 1.5em courier';
+	ctx.fillText(FPS, 10, 20);
 }
