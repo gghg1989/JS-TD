@@ -11,6 +11,10 @@ var xStart = (CANVAS_WIDTH - (GRID_SIZE * vn)) / 2;
 var yStart = (CANVAS_HEIGHT - (GRID_SIZE * hn)) / 2;
 var canvas, ctx, ball;
 
+var imageAsset = {
+	res: "assets/auto-tiles.png"
+};
+
 // Debug switch
 var showFPS = true;
 var showGrid = true;
@@ -25,11 +29,12 @@ function init() {
 
 	ball = new Ball();
 
-	animate();
+	render();
+	// SpriteSheet.load(imageAsset.res, )
 }
 
-function animate(time) {
-	requestAnimationFrame(animate);
+function render(time) {
+	requestAnimationFrame(render);
 	cleanBackground();
 	if (showGrid) {
 		drawGrid();
@@ -106,6 +111,7 @@ function drawGrid() {
 			var textHeight = gridFontSize;
 			var xOfText = xStart + (GRID_SIZE * i) + (GRID_SIZE / 2) - (textWidth / 2);
 			var yOfText = yStart + (GRID_SIZE * j) + (GRID_SIZE / 2) + (textHeight / 2);
+			
 			ctx.fillText(gridCoord, xOfText, yOfText);
 		}
 	}
@@ -147,7 +153,10 @@ function getCurrentTileID() {
 		ctx.font = 'normal bold 1.5em courier';
 		ctx.fillText('('+tileID[0]+', '+tileID[1]+')', 10, 40);
 		highlightTile(tileID[0], tileID[1]);
+
+		drawTileID(cursorX, cursorY);
 	}
+
 }
 
 function getTileID(x, y) {
