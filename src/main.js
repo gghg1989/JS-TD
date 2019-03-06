@@ -12,9 +12,19 @@ var yStart = (CANVAS_HEIGHT - (GRID_SIZE * hn)) / 2;
 var canvas, ctx, ball;
 
 var imageAsset = {
-	res: "assets/auto-tiles.png"
+	autoTiles: "assets/auto-tiles.png"
 };
 
+var sprites = {
+	grass : {
+		source: "autoTiles",
+		sx: 0,
+		sy: 0,
+		w: 32,
+		h: 32,
+		frames: 0
+	}
+};
 // Debug switch
 var showFPS = true;
 var showGrid = true;
@@ -28,14 +38,17 @@ function init() {
 	ctx = canvas.getContext('2d');
 
 	ball = new Ball();
-
-	render();
+	SpriteSheet.load(imageAsset, sprites, function(){
+		console.log("Images loaded.");
+		render();
+	});
 	// SpriteSheet.load(imageAsset.res, )
 }
 
 function render(time) {
 	requestAnimationFrame(render);
 	cleanBackground();
+	SpriteSheet.draw(ctx, 'grass', 64+xStart, 64+yStart, 0);
 	if (showGrid) {
 		drawGrid();
 		getCurrentTileID();
