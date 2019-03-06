@@ -17,20 +17,20 @@ var imageAsset = {
 };
 
 var sprites = {
-	'tile-set' : {
+	1 : {
+		source: "autoTiles",
+		sx: 0,
+		sy: 0,
+		w: 32,
+		h: 32,
+		frames: 0
+	},
+	2 : {
 		source: "autoTiles",
 		sx: 64,
 		sy: 0,
 		w: 64,
 		h: 96,
-		frames: 0
-	},
-	2 : {
-		source: "autoTiles",
-		sx: 80,
-		sy: 48,
-		w: 32,
-		h: 32,
 		frames: 0
 	}
 };
@@ -38,10 +38,22 @@ var sprites = {
 var autoTileSet = {
 	tileSetSource: "",
 	tileSet: {
-		left-top: 8,
-		right-top: 11,
-		left-bottom: 20,
-		right-bottom: 23,
+		'left-top-convex': 8,
+		'right-top-convex': 11,
+		'left-bottom-convex': 20,
+		'right-bottom-convex': 23,
+		'left-top-concave': 2,
+		'right-top-concave': 3,
+		'left-bottom-concave': 6,
+		'right-bottom-concave': 7,
+		'up-left-side': 9,
+		'up-right-side': 10,
+		'right-up-side': 15,
+		'right-down-side': 19,
+		'down-left-side': 21,
+		'down-right-side': 22,
+		'left-up-side': 12,
+		'left-down-side': 16
 	}
 }
 // Debug switch
@@ -67,33 +79,39 @@ function render(time) {
 	requestAnimationFrame(render);
 	cleanBackground();
 	// Render tile map
-	// var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-	// 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	// 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
-	// var tileMapSize = tileMap.length;
-	// for (var i = 0; i < tileMapSize; i++) {
-	// 	currentTileX = xStart + (TILE_SIZE * (i % vn));
-	// 	currentTileY = yStart + (TILE_SIZE * Math.floor(i / vn));
-	// 	SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
-	// }
-	SpriteSheet.draw(ctx, 'tile-set', xStart + TILE_SIZE * 2, yStart + TILE_SIZE * 2, 0);
+	var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+	var tileMapSize = tileMap.length;
+	for (var i = 0; i < tileMapSize; i++) {
+		currentTileX = xStart + (TILE_SIZE * (i % vn));
+		currentTileY = yStart + (TILE_SIZE * Math.floor(i / vn));
+
+		SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+	}
+
+	SpriteSheet.draw(ctx, 2, xStart + TILE_SIZE * 0, yStart + TILE_SIZE * 0, 0);
 	
 	if (showGrid) {
-		drawGrid(GRID_SIZE, true);
-		drawGrid(AUTOTILE_SIZE, false);
+		// drawGrid(GRID_SIZE, true);
+		// drawGrid(AUTOTILE_SIZE, false);
+		// Draw tile grid
+		Debugger.drawGrid(ctx, GRID_SIZE, xStart, yStart, vn, hn, true);
+		// Draw auto tile grid
+		Debugger.drawGrid(ctx, AUTOTILE_SIZE, xStart, yStart, vn * 2, hn * 2, false);
 		getCurrentTileID();
 	}
 	if (showFPS) {
-		drawFPS(time);
+		Debugger.drawFPS(ctx, time);
 	}
 }
 
@@ -102,51 +120,6 @@ function cleanBackground() {
 	ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	ctx.fillStyle = CANVAS_BACKGROUNDS;
 	ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-}
-
-function drawGrid(gridSize, bTileID) {
-	var gridFontSize = 10;
-	for (var i = 0; i <= vn; i++) {
-		var xOfLine = xStart + (gridSize * i);
-		ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-		ctx.beginPath();
-		ctx.moveTo(xOfLine, 0);
-		ctx.lineTo(xOfLine, CANVAS_HEIGHT);
-		ctx.stroke();
-	}
-	for (var i = 0; i <= hn; i++) {
-		var yOfLine = yStart + (gridSize * i);
-		ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-		ctx.beginPath();
-		ctx.moveTo(0, yOfLine);
-		ctx.lineTo(CANVAS_WIDTH, yOfLine);
-		ctx.stroke();
-	}
-
-	if (bTileID) {
-		for (var i = 0; i < vn; i++) {
-			for (var j = 0; j < hn; j++) {
-				var gridCoord = i+", "+j;
-				ctx.font = gridFontSize + "px Arial";
-				var textWidth = ctx.measureText(gridCoord).width;
-				var textHeight = gridFontSize;
-				var xOfText = xStart + (gridSize * i) + (gridSize / 2) - (textWidth / 2);
-				var yOfText = yStart + (gridSize * j) + (gridSize / 2) + (textHeight / 2);
-				
-				ctx.fillText(gridCoord, xOfText, yOfText);
-			}
-		}
-	}
-}
-
-// FPS Renderer
-var previousFrameTime;
-function drawFPS(time) {
-	var FPS = Math.floor(1000 / (time - previousFrameTime));
-	previousFrameTime = time;
-	ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-	ctx.font = 'normal bold 1.5em courier';
-	ctx.fillText('FPS:' + FPS, 10, 20);
 }
 
 // Draw tile ID on its position
@@ -176,7 +149,7 @@ function getCurrentTileID() {
 		// ctx.fillText('('+tileID[0]+', '+tileID[1]+')', 10, 40);
 		highlightTile(tileID[0], tileID[1]);
 
-		// drawTileID(cursorX, cursorY);
+		drawTileID(cursorX, cursorY);
 	}
 
 }
@@ -197,4 +170,25 @@ function highlightTile(tileX, tileY, highlightColor) {
 	var highlightTileX = xStart + (tileX * GRID_SIZE);
 	var highlightTileY = yStart + (tileY * GRID_SIZE);
 	ctx.fillRect(highlightTileX, highlightTileY, GRID_SIZE, GRID_SIZE);
+}
+
+function checkSurrounding(x, y) {
+	// top left 		(x-1, y-1)
+	// top 				(x, y-1)
+	// top right		(x+1, y-1)
+	// right mid 		(x+1, y)
+	// bottom right 	(x+1, y+1)
+	// bottom 			(x, y+1)
+	// bottom left 		(x-1, y+1)
+	// left mid 		(x-1, y)
+
+}
+
+function checkIfInMap(x, y, vn, hn) {
+	if (x<0 || y<0 || x>vn || y>hn) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
