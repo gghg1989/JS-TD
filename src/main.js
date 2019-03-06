@@ -2,7 +2,7 @@ window.onload = init;
 
 const 	CANVAS_WIDTH = 500,
 		CANVAS_HEIGHT = 400,
-		GRID_SIZE = 32,
+		GRID_SIZE = TILE_SIZE = 32,
 		CANVAS_BACKGROUNDS = 'rgba(0, 44, 55, 0.5)';
 
 var vn = Math.floor(CANVAS_WIDTH / GRID_SIZE);
@@ -16,10 +16,18 @@ var imageAsset = {
 };
 
 var sprites = {
-	grass : {
+	1 : {
 		source: "autoTiles",
 		sx: 0,
 		sy: 0,
+		w: 32,
+		h: 32,
+		frames: 0
+	},
+	2 : {
+		source: "autoTiles",
+		sx: 80,
+		sy: 48,
 		w: 32,
 		h: 32,
 		frames: 0
@@ -48,7 +56,26 @@ function init() {
 function render(time) {
 	requestAnimationFrame(render);
 	cleanBackground();
-	SpriteSheet.draw(ctx, 'grass', 64+xStart, 64+yStart, 0);
+	// Render tile map
+	var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+	var tileMapSize = tileMap.length;
+	for (var i = 0; i < tileMapSize; i++) {
+		currentTileX = xStart + (TILE_SIZE * (i % vn));
+		currentTileY = yStart + (TILE_SIZE * Math.floor(i / vn));
+		SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+	}
+	
 	if (showGrid) {
 		drawGrid();
 		getCurrentTileID();
