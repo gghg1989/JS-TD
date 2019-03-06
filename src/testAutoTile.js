@@ -34,6 +34,16 @@ var sprites = {
 		frames: 0
 	}
 };
+
+var autoTileSet = {
+	tileSetSource: "",
+	tileSet: {
+		left-top: 8,
+		right-top: 11,
+		left-bottom: 20,
+		right-bottom: 23,
+	}
+}
 // Debug switch
 var showFPS = true;
 var showGrid = true;
