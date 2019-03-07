@@ -27,8 +27,8 @@ var sprites = {
 	},
 	2 : {
 		source: "autoTiles",
-		sx: 64,
-		sy: 0,
+		sx: 320,
+		sy: 192,
 		w: 64,
 		h: 96,
 		frames: 0
@@ -58,17 +58,17 @@ var autoTileSet = {
 }
 
 var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
 
 // Debug switch
 var showFPS = true;
@@ -93,22 +93,37 @@ function render(time) {
 	requestAnimationFrame(render);
 	cleanBackground();
 	// Render tile map
-	
+	paintTile();
 	var tileMapSize = tileMap.length;
 	for (var i = 0; i < tileMapSize; i++) {
 		currentTileX = xStart + (TILE_SIZE * (i % hn));
 		currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
+		if (tileMap[i] == 2) {
+			var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
+								tileMap[i - 1], tileMap[i], tileMap[i + 1],
+								tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
 
-		var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
-							tileMap[i - 1], tileMap[i], tileMap[i + 1],
-							tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
+			var subTiles = getSubTiles(tileNeighbours);
+			for (var j = 0; j < 4; j++) {
 
-		var subTiles = getSubTiles(tileNeighbours);
-
-		SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+				SpriteSheet.drawAutoTile(ctx, tileMap[i], 
+										currentTileX + AUTOTILE_SIZE * (j % 2), 
+										currentTileY + AUTOTILE_SIZE * Math.floor(j / 2), 
+										subTiles[j], 0);
+				// Draw subtiles mtx
+				var subTilesText = '(' + subTiles[0] + ',' + subTiles[1] + ',' 
+									+ subTiles[2] + ',' + subTiles[3] + ')';
+				var textWidth = ctx.measureText(subTilesText).width;
+				ctx.font = 'normal bold 8pt courier';
+				// ctx.fillText(subTilesText, xStart + currentTileX, yStart + currentTileY - 10);
+			}
+		}
+		else {
+			SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+		}
 	}
 
-	SpriteSheet.draw(ctx, 2, xStart + TILE_SIZE * 0, yStart + TILE_SIZE * 0, 0);
+	// SpriteSheet.draw(ctx, 2, xStart + TILE_SIZE * 0, yStart + TILE_SIZE * 0, 0);
 	
 	if (showGrid) {
 		// drawGrid(GRID_SIZE, true);
@@ -181,18 +196,6 @@ function highlightTile(tileX, tileY, highlightColor) {
 	ctx.fillRect(highlightTileX, highlightTileY, GRID_SIZE, GRID_SIZE);
 }
 
-function checkSurrounding(x, y) {
-	// top left 		(x-1, y-1) n - hn -1
-	// top 				(x, y-1)
-	// top right		(x+1, y-1)
-	// right mid 		(x+1, y)
-	// bottom right 	(x+1, y+1)
-	// bottom 			(x, y+1)
-	// bottom left 		(x-1, y+1)
-	// left mid 		(x-1, y)
-
-}
-
 // 'left-top-convex': 8,
 // 'right-top-convex': 11,
 // 'left-bottom-convex': 20,
@@ -229,7 +232,7 @@ function getSubTiles(tileNeighbours) {
 	}
 	else {
 		if (tileNeighbours[1] == tileMainID) {
-			subTiles[0] = 12;
+			subTiles[0] = 16;
 		}
 		else {
 			subTiles[0] = 8;
@@ -239,23 +242,23 @@ function getSubTiles(tileNeighbours) {
 	// right top subtile
 	if (tileNeighbours[5] == tileMainID) {
 		if (tileNeighbours[1] == tileMainID) {
-			if (tileNeighbours[0] == tileMainID) {
-				subTiles[0] = 13;
+			if (tileNeighbours[2] == tileMainID) {
+				subTiles[1] = 14;
 			}
 			else {
-				subTiles[0] = 3;
+				subTiles[1] = 3;
 			}
 		}
 		else {
-			subTiles[0] = 10;
+			subTiles[1] = 10;
 		}
 	}
 	else {
 		if (tileNeighbours[1] == tileMainID) {
-			subTiles[0] = 15;
+			subTiles[1] = 15;
 		}
 		else {
-			subTiles[0] = 11;
+			subTiles[1] = 11;
 		}
 	}
 
@@ -263,39 +266,88 @@ function getSubTiles(tileNeighbours) {
 	if (tileNeighbours[7] == tileMainID) {
 		if (tileNeighbours[3] == tileMainID) {
 			if (tileNeighbours[6] == tileMainID) {
-				subTiles[2] = 13;
+				subTiles[2] = 17;
 			}
 			else {
-				subTiles[2] = 3;
+				subTiles[2] = 6;
 			}
 		}
 		else {
-			subTiles[2] = 10;
+			subTiles[2] = 16;
 		}
 	}
 	else {
 		if (tileNeighbours[3] == tileMainID) {
-			subTiles[2] = 15;
+			subTiles[2] = 21;
 		}
 		else {
-			subTiles[2] = 11;
+			subTiles[2] = 20;
 		}
 	}
 
-	return subtiles;
-}
-
-function getTile(tileStyle, ) {
-
-}
-
-
-
-function checkIfInMap(x, y, vn, hn) {
-	if (x<0 || y<0 || x>vn || y>hn) {
-		return false;
+	// right bottom subtile
+	if (tileNeighbours[5] == tileMainID) {
+		if (tileNeighbours[7] == tileMainID) {
+			if (tileNeighbours[8] == tileMainID) {
+				subTiles[3] = 18;
+			}
+			else {
+				subTiles[3] = 7;
+			}
+		}
+		else {
+			subTiles[3] = 22;
+		}
 	}
 	else {
-		return true;
+		if (tileNeighbours[7] == tileMainID) {
+			subTiles[3] = 19;
+		}
+		else {
+			subTiles[3] = 23;
+		}
+	}
+
+	return subTiles;
+}
+
+
+function paintTile() {
+	var isDown = false;
+	var isPainting = false;
+	
+	// console.log(canvasBoundary);
+	canvas.addEventListener('mousedown', function(e) {
+		isDown = true;
+		isPainting = true;
+		if (isPainting) {
+			updateTileMap(e);
+		}
+	})
+
+	canvas.addEventListener('mousemove', function(e) {
+		if (isDown) {
+			isPainting = true;
+		}
+		if (isPainting) {
+			updateTileMap(e);
+		}
+	})
+
+	canvas.addEventListener('mouseup', function(e) {
+		isDown = false;
+		isPainting = false;
+	})
+}
+
+function updateTileMap(e) {
+	var canvasBoundary = canvas.getBoundingClientRect();
+	var clientX = e.clientX;
+	var clientY = e.clientY;
+	cursorX = clientX - canvasBoundary.x;
+	cursorY = clientY - canvasBoundary.y;
+	if (typeof(cursorX) != 'undefined' || typeof(cursorY) != 'undefined') {
+		var tileID = getTileID(cursorX, cursorY);
+		tileMap[tileID[1] * hn + tileID[0]] = 2;
 	}
 }

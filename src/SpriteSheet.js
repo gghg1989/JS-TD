@@ -46,11 +46,40 @@ var SpriteSheet = new function() {
 		if(!frame) {
 			frame = 0;
 		}
-		ctx.drawImage(_spriteSheet.images[s.source],
-			s.sx + frame * s.w,
-			s.sy,
-			s.w, s.h,
-			x, y,
-			s.w, s.h);
+		if (typeof(s) != 'undefined') {
+			ctx.drawImage(_spriteSheet.images[s.source],
+				s.sx + frame * s.w,
+				s.sy,
+				s.w, s.h,
+				x, y,
+				s.w, s.h);
+		}
+	};
+
+	/**
+	* Draw auto tile sprite 
+	* @function
+	* @param {Context} ctx - Context of canvas.
+	* @param {string} sprite - Sprite name in the sprite data sheet.
+	* @param {number} x - Horizontal position that you want to draw sprite, in pixels.
+	* @param {number} y - Vertical position that you want to draw sprite, in pixels.
+	* @param {number} frame - Frame numbers for animation.
+	*/
+	this.drawAutoTile =function(ctx, sprite, x, y, n, frame) {
+		var autoTileSize = 16;
+		var autoTileX = autoTileSize * (n % 4);
+		var autoTileY = autoTileSize * Math.floor(n / 4);
+		var s = this.map[sprite];
+		if(!frame) {
+			frame = 0;
+		}
+		if (typeof(s) != 'undefined') {
+			ctx.drawImage(_spriteSheet.images[s.source],
+				s.sx + autoTileX,
+				s.sy + autoTileY,
+				autoTileSize, autoTileSize,
+				x, y,
+				autoTileSize, autoTileSize);
+		}
 	};
 };
