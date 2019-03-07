@@ -99,9 +99,11 @@ function render(time) {
 		currentTileX = xStart + (TILE_SIZE * (i % hn));
 		currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
 
-		var tileNeighbour = []
+		var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
+							tileMap[i - 1], tileMap[i], tileMap[i + 1],
+							tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
 
-		var subTiles = getSubTiles();
+		var subTiles = getSubTiles(tileNeighbours);
 
 		SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
 	}
@@ -191,9 +193,103 @@ function checkSurrounding(x, y) {
 
 }
 
-function getBoundary(tileStyle, ) {
+// 'left-top-convex': 8,
+// 'right-top-convex': 11,
+// 'left-bottom-convex': 20,
+// 'right-bottom-convex': 23,
+// 'left-top-concave': 2,
+// 'right-top-concave': 3,
+// 'left-bottom-concave': 6,
+// 'right-bottom-concave': 7,
+// 'up-left-side': 9,
+// 'up-right-side': 10,
+// 'right-up-side': 15,
+// 'right-down-side': 19,
+// 'down-left-side': 21,
+// 'down-right-side': 22,
+// 'left-up-side': 12,
+// 'left-down-side': 16
+
+function getSubTiles(tileNeighbours) {
+	var tileMainID = tileNeighbours[4];
+	var subTiles = [tileMainID, tileMainID, tileMainID, tileMainID];
+	// left top subtile
+	if (tileNeighbours[3] == tileMainID) {
+		if (tileNeighbours[1] == tileMainID) {
+			if (tileNeighbours[0] == tileMainID) {
+				subTiles[0] = 13;
+			}
+			else {
+				subTiles[0] = 2;
+			}
+		}
+		else {
+			subTiles[0] = 9;
+		}
+	}
+	else {
+		if (tileNeighbours[1] == tileMainID) {
+			subTiles[0] = 12;
+		}
+		else {
+			subTiles[0] = 8;
+		}
+	}
+	
+	// right top subtile
+	if (tileNeighbours[5] == tileMainID) {
+		if (tileNeighbours[1] == tileMainID) {
+			if (tileNeighbours[0] == tileMainID) {
+				subTiles[0] = 13;
+			}
+			else {
+				subTiles[0] = 3;
+			}
+		}
+		else {
+			subTiles[0] = 10;
+		}
+	}
+	else {
+		if (tileNeighbours[1] == tileMainID) {
+			subTiles[0] = 15;
+		}
+		else {
+			subTiles[0] = 11;
+		}
+	}
+
+	// left bottom subtile
+	if (tileNeighbours[7] == tileMainID) {
+		if (tileNeighbours[3] == tileMainID) {
+			if (tileNeighbours[6] == tileMainID) {
+				subTiles[2] = 13;
+			}
+			else {
+				subTiles[2] = 3;
+			}
+		}
+		else {
+			subTiles[2] = 10;
+		}
+	}
+	else {
+		if (tileNeighbours[3] == tileMainID) {
+			subTiles[2] = 15;
+		}
+		else {
+			subTiles[2] = 11;
+		}
+	}
+
+	return subtiles;
+}
+
+function getTile(tileStyle, ) {
 
 }
+
+
 
 function checkIfInMap(x, y, vn, hn) {
 	if (x<0 || y<0 || x>vn || y>hn) {
