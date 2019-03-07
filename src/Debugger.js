@@ -18,22 +18,20 @@ var Debugger = new function() {
 
 		var gridFontSize = 10;
 
+		ctx.strokeStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+		ctx.beginPath();
 		for (var i = 0; i <= hn; i++) {
 			var xOfLine = xOffset + (gridSize * i);
-			ctx.strokeStyle = 'rgba(0, 0, 0, ' + alpha + ')';
-			ctx.beginPath();
 			ctx.moveTo(xOfLine, 0);
 			ctx.lineTo(xOfLine, CANVAS_HEIGHT);
-			ctx.stroke();
 		}
+		
 		for (var i = 0; i <= vn; i++) {
 			var yOfLine = yOffset + (gridSize * i);
-			ctx.strokeStyle = 'rgba(0, 0, 0, ' + alpha + ')';
-			ctx.beginPath();
 			ctx.moveTo(0, yOfLine);
 			ctx.lineTo(CANVAS_WIDTH, yOfLine);
-			ctx.stroke();
 		}
+		ctx.stroke();
 
 		if (bTileID) {
 			for (var i = 0; i < hn; i++) {
