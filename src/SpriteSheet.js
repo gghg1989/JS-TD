@@ -74,6 +74,12 @@ var SpriteSheet = new function() {
 			frame = 0;
 		}
 		if (typeof(s) != 'undefined') {
+			// ctx.drawImage(_spriteSheet.images[s.source],
+			// 	s.sx + autoTileX,
+			// 	s.sy + autoTileY,
+			// 	autoTileSize, autoTileSize,
+			// 	x, y,
+			// 	autoTileSize, autoTileSize);
 			ctx.drawImage(_spriteSheet.images[s.source],
 				s.sx + autoTileX,
 				s.sy + autoTileY,

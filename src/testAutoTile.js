@@ -17,6 +17,7 @@ var imageAsset = {
 };
 
 var sprites = {
+	// 
 	1 : {
 		source: "autoTiles",
 		sx: 0,
@@ -27,8 +28,24 @@ var sprites = {
 	},
 	2 : {
 		source: "autoTiles",
-		sx: 320,
-		sy: 192,
+		sx: 192,
+		sy: 0,
+		w: 64,
+		h: 96,
+		frames: 0
+	},
+	3 : {
+		source: "autoTiles",
+		sx: 0,
+		sy: 96,
+		w: 32,
+		h: 32,
+		frames: 0
+	},
+	4 : {
+		source: "autoTiles",
+		sx: 128,
+		sy: 96,
 		w: 64,
 		h: 96,
 		frames: 0
@@ -58,10 +75,10 @@ var autoTileSet = {
 }
 
 var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -98,7 +115,7 @@ function render(time) {
 	for (var i = 0; i < tileMapSize; i++) {
 		currentTileX = xStart + (TILE_SIZE * (i % hn));
 		currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
-		if (tileMap[i] == 2) {
+		if (tileMap[i] % 2 == 0) {
 			var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
 								tileMap[i - 1], tileMap[i], tileMap[i + 1],
 								tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
