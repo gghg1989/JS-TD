@@ -6,10 +6,10 @@ const 	CANVAS_WIDTH = 500,
 		AUTOTILE_SIZE = TILE_SIZE / 2,
 		CANVAS_BACKGROUNDS = 'rgba(0, 44, 55, 0.5)';
 
-var vn = Math.floor(CANVAS_WIDTH / GRID_SIZE);
-var hn = Math.floor(CANVAS_HEIGHT / GRID_SIZE);
-var xStart = (CANVAS_WIDTH - (GRID_SIZE * vn)) / 2;
-var yStart = (CANVAS_HEIGHT - (GRID_SIZE * hn)) / 2;
+var hn = Math.floor(CANVAS_WIDTH / GRID_SIZE);
+var vn = Math.floor(CANVAS_HEIGHT / GRID_SIZE);
+var xStart = (CANVAS_WIDTH - (GRID_SIZE * hn)) / 2;
+var yStart = (CANVAS_HEIGHT - (GRID_SIZE * vn)) / 2;
 var canvas, ctx, ball;
 
 var imageAsset = {
@@ -56,6 +56,20 @@ var autoTileSet = {
 		'left-down-side': 16
 	}
 }
+
+var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+
 // Debug switch
 var showFPS = true;
 var showGrid = true;
@@ -79,22 +93,15 @@ function render(time) {
 	requestAnimationFrame(render);
 	cleanBackground();
 	// Render tile map
-	var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+	
 	var tileMapSize = tileMap.length;
 	for (var i = 0; i < tileMapSize; i++) {
-		currentTileX = xStart + (TILE_SIZE * (i % vn));
-		currentTileY = yStart + (TILE_SIZE * Math.floor(i / vn));
+		currentTileX = xStart + (TILE_SIZE * (i % hn));
+		currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
+
+		var tileNeighbour = []
+
+		var subTiles = getSubTiles();
 
 		SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
 	}
@@ -105,9 +112,9 @@ function render(time) {
 		// drawGrid(GRID_SIZE, true);
 		// drawGrid(AUTOTILE_SIZE, false);
 		// Draw tile grid
-		Debugger.drawGrid(ctx, GRID_SIZE, xStart, yStart, vn, hn, true);
+		Debugger.drawGrid(ctx, GRID_SIZE, xStart, yStart, hn, vn, 0.5, true);
 		// Draw auto tile grid
-		Debugger.drawGrid(ctx, AUTOTILE_SIZE, xStart, yStart, vn * 2, hn * 2, false);
+		Debugger.drawGrid(ctx, AUTOTILE_SIZE, xStart, yStart, hn * 2, vn * 2, 0.3, false);
 		getCurrentTileID();
 	}
 	if (showFPS) {
@@ -173,7 +180,7 @@ function highlightTile(tileX, tileY, highlightColor) {
 }
 
 function checkSurrounding(x, y) {
-	// top left 		(x-1, y-1)
+	// top left 		(x-1, y-1) n - hn -1
 	// top 				(x, y-1)
 	// top right		(x+1, y-1)
 	// right mid 		(x+1, y)
@@ -181,6 +188,10 @@ function checkSurrounding(x, y) {
 	// bottom 			(x, y+1)
 	// bottom left 		(x-1, y+1)
 	// left mid 		(x-1, y)
+
+}
+
+function getBoundary(tileStyle, ) {
 
 }
 

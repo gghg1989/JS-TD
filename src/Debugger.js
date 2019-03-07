@@ -8,19 +8,27 @@ var Debugger = new function() {
 	* @param {number} y - Vertical position that you want to draw sprite, in pixels.
 	* @param {number} frame - Frame numbers for animation.
 	*/
-	this.drawGrid = function(ctx, gridSize, xOffset, yOffset, vn, hn, bTileID) {
+	this.drawGrid = function(ctx, gridSize, xOffset, yOffset, hn, vn, alpha, bTileID) {
+		if (alpha >= 1) {
+			alpha = 1;
+		}
+		else if (alpha <=0 ) {
+			alpha = 0.1;
+		}
+
 		var gridFontSize = 10;
-		for (var i = 0; i <= vn; i++) {
+
+		for (var i = 0; i <= hn; i++) {
 			var xOfLine = xOffset + (gridSize * i);
-			ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+			ctx.strokeStyle = 'rgba(0, 0, 0, ' + alpha + ')';
 			ctx.beginPath();
 			ctx.moveTo(xOfLine, 0);
 			ctx.lineTo(xOfLine, CANVAS_HEIGHT);
 			ctx.stroke();
 		}
-		for (var i = 0; i <= hn; i++) {
+		for (var i = 0; i <= vn; i++) {
 			var yOfLine = yOffset + (gridSize * i);
-			ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+			ctx.strokeStyle = 'rgba(0, 0, 0, ' + alpha + ')';
 			ctx.beginPath();
 			ctx.moveTo(0, yOfLine);
 			ctx.lineTo(CANVAS_WIDTH, yOfLine);
@@ -28,8 +36,8 @@ var Debugger = new function() {
 		}
 
 		if (bTileID) {
-			for (var i = 0; i < vn; i++) {
-				for (var j = 0; j < hn; j++) {
+			for (var i = 0; i < hn; i++) {
+				for (var j = 0; j < vn; j++) {
 					var gridCoord = i+", "+j;
 					ctx.font = gridFontSize + "px Arial";
 					var textWidth = ctx.measureText(gridCoord).width;
