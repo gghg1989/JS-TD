@@ -49,7 +49,15 @@ var sprites = {
 		w: 64,
 		h: 96,
 		frames: 0
-	}
+	},
+	6 : {
+		source: "autoTiles",
+		sx: 256,
+		sy: 0,
+		w: 64,
+		h: 96,
+		frames: 0
+	} 
 };
 
 var autoTileSet = {
@@ -74,7 +82,7 @@ var autoTileSet = {
 	}
 }
 
-var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+var tileMaps = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
 			   1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -85,7 +93,19 @@ var tileMap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+			   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 6, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
 // Debug switch
 var showFPS = true;
@@ -111,32 +131,35 @@ function render(time) {
 	cleanBackground();
 	// Render tile map
 	paintTile();
-	var tileMapSize = tileMap.length;
-	for (var i = 0; i < tileMapSize; i++) {
-		currentTileX = xStart + (TILE_SIZE * (i % hn));
-		currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
-		if (tileMap[i] % 2 == 0) {
-			var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
-								tileMap[i - 1], tileMap[i], tileMap[i + 1],
-								tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
+	for (var layer = 0; layer < tileMaps.length; layer++) {
+		var tileMap = tileMaps[layer];
+		var tileMapSize = tileMap.length;
+		for (var i = 0; i < tileMapSize; i++) {
+			currentTileX = xStart + (TILE_SIZE * (i % hn));
+			currentTileY = yStart + (TILE_SIZE * Math.floor(i / hn));
+			if (tileMap[i] % 2 == 0) {
+				var tileNeighbours = [tileMap[i - hn -1], tileMap[i - hn], tileMap[i - hn + 1], 
+									tileMap[i - 1], tileMap[i], tileMap[i + 1],
+									tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
 
-			var subTiles = getSubTiles(tileNeighbours);
-			for (var j = 0; j < 4; j++) {
+				var subTiles = getSubTiles(tileNeighbours);
+				for (var j = 0; j < 4; j++) {
 
-				SpriteSheet.drawAutoTile(ctx, tileMap[i], 
-										currentTileX + AUTOTILE_SIZE * (j % 2), 
-										currentTileY + AUTOTILE_SIZE * Math.floor(j / 2), 
-										subTiles[j], 0);
-				// Draw subtiles mtx
-				var subTilesText = '(' + subTiles[0] + ',' + subTiles[1] + ',' 
-									+ subTiles[2] + ',' + subTiles[3] + ')';
-				var textWidth = ctx.measureText(subTilesText).width;
-				ctx.font = 'normal bold 8pt courier';
-				// ctx.fillText(subTilesText, xStart + currentTileX, yStart + currentTileY - 10);
+					SpriteSheet.drawAutoTile(ctx, tileMap[i], 
+											currentTileX + AUTOTILE_SIZE * (j % 2), 
+											currentTileY + AUTOTILE_SIZE * Math.floor(j / 2), 
+											subTiles[j], 0);
+					// Draw subtiles mtx
+					var subTilesText = '(' + subTiles[0] + ',' + subTiles[1] + ',' 
+										+ subTiles[2] + ',' + subTiles[3] + ')';
+					var textWidth = ctx.measureText(subTilesText).width;
+					ctx.font = 'normal bold 8pt courier';
+					// ctx.fillText(subTilesText, xStart + currentTileX, yStart + currentTileY - 10);
+				}
 			}
-		}
-		else {
-			SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+			else {
+				SpriteSheet.draw(ctx, tileMap[i], currentTileX, currentTileY, 0);
+			}
 		}
 	}
 
@@ -365,6 +388,6 @@ function updateTileMap(e) {
 	cursorY = clientY - canvasBoundary.y;
 	if (typeof(cursorX) != 'undefined' || typeof(cursorY) != 'undefined') {
 		var tileID = getTileID(cursorX, cursorY);
-		tileMap[tileID[1] * hn + tileID[0]] = 2;
+		tileMaps[0][tileID[1] * hn + tileID[0]] = 2;
 	}
 }
