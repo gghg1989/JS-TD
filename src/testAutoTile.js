@@ -106,8 +106,8 @@ var tileMaps = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-//loadTileMap(tileMaps);
-
+loadTileMap(tileMaps);
+console.log(tileMaps);
 // Debug switch
 var showFPS = true;
 var showGrid = true;
@@ -393,7 +393,8 @@ function updateTileMap(e) {
 	}
 }
 
-function loadTileMap(mapData) {
+function loadTileMap(mapDataSource) {
+	var mapData = JSON.parse(JSON.stringify(mapDataSource));
 	for (var layer = 0; layer < mapData.length; layer++) {
 		var tileMap = mapData[layer];
 		var tileMapSize = tileMap.length;
@@ -404,12 +405,14 @@ function loadTileMap(mapData) {
 									tileMap[i + hn - 1], tileMap[i + hn], tileMap[i + hn + 1]];
 
 				var subTiles = getSubTiles(tileNeighbours);
+				subTiles.unshift(tileMap[i]);
 				tileMap[i] = subTiles;
 			}
 			else {
 				tileMap[i] = [tileMap[i]];
 			}
 		}
-		console.log(tileMap);
 	}
+	console.log(mapData);
+	return mapData;
 }
