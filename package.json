@@ -1,0 +1,22 @@
+{
+  "name": "js-td",
+  "version": "1.0.0",
+  "description": "This is a practicing JavaScript Tower Defence Game.",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gghg1989/JS-TD.git"
+  },
+  "keywords": [
+    "Game"
+  ],
+  "author": "Yuzhou Feng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gghg1989/JS-TD/issues"
+  },
+  "homepage": "https://github.com/gghg1989/JS-TD#readme"
+}
