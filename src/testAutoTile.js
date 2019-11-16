@@ -416,3 +416,7 @@ function loadTileMap(mapDataSource) {
 	console.log(mapData);
 	return mapData;
 }
+
+function select(tileID) {
+	console.log(tileID)
+}
